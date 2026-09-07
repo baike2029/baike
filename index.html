@@ -234,6 +234,90 @@
             gap: 12px;
         }
 
+        /* ===== 网站导航下拉 ===== */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            transition: var(--transition);
+        }
+
+        .nav-dropdown-toggle:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-dropdown-toggle svg {
+            transition: transform 0.25s ease;
+        }
+
+        .nav-dropdown:hover .nav-dropdown-toggle,
+        .nav-dropdown.open .nav-dropdown-toggle {
+            color: var(--color-primary);
+        }
+
+        .nav-dropdown:hover .nav-dropdown-toggle svg,
+        .nav-dropdown.open .nav-dropdown-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 14px);
+            right: 0;
+            min-width: 180px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+
+        /* 悬停桥接区，防止鼠标移向下拉菜单途中菜单消失 */
+        .nav-dropdown-menu::before {
+            content: "";
+            position: absolute;
+            top: -14px;
+            left: 0;
+            right: 0;
+            height: 14px;
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu,
+        .nav-dropdown.open .nav-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-dropdown-item:hover {
+            background: var(--color-bg);
+            color: var(--color-accent-dark);
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -1322,6 +1406,36 @@
                 display: flex;
             }
 
+            /* 移动端菜单内：网站导航改为点击展开 */
+            .nav-dropdown {
+                width: 100%;
+            }
+
+            .nav-dropdown-menu {
+                position: static;
+                display: none;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+                padding: 4px 0 4px 16px;
+                min-width: 0;
+            }
+
+            .nav-dropdown-menu::before {
+                display: none;
+            }
+
+            .nav-dropdown.open .nav-dropdown-menu {
+                display: block;
+            }
+
+            .nav-dropdown-item {
+                padding: 10px 0;
+            }
+
             .hero {
                 padding: 110px 0 56px;
             }
@@ -1433,6 +1547,18 @@
                     <a href="#pricing" class="nav-link">价格方案</a>
                     <a href="#warranty" class="nav-link">售后保障</a>
                     <a href="#faq" class="nav-link">常见问题</a>
+                    <div class="nav-dropdown" id="navDropdown">
+                        <button class="nav-dropdown-toggle" id="navDropdownToggle" aria-haspopup="true" aria-expanded="false">
+                            网站导航
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a class="nav-dropdown-item" href="https://xiaobaike.dpdns.org/index.html">常用软件下载</a>
+                            <a class="nav-dropdown-item" href="https://diy.ee.cd/" target="_blank" rel="noopener">视频封面生成</a>
+                            <a class="nav-dropdown-item" href="https://xiaobaike.dpdns.org/ipower.html">电脑电源计算</a>
+                            <a class="nav-dropdown-item" href="https://windows.ee.cd/" target="_blank" rel="noopener">WINDOWS系统下载</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="nav-cta">
                     <a href="#contact" class="btn btn-primary">立即咨询</a>
@@ -2153,13 +2279,12 @@
                     </div>
                 </div>
                 <div>
-                    <h4 class="footer-title">服务保障</h4>
+                    <h4 class="footer-title">网站导航</h4>
                     <div class="footer-links">
-                        <a href="#process" class="footer-link">服务流程</a>
-                        <a href="#pricing" class="footer-link">价格标准</a>
-                        <a href="#warranty" class="footer-link">售后保障</a>
-                        <a href="#faq" class="footer-link">常见问题</a>
-                        <a href="#contact" class="footer-link">联系我们</a>
+                        <a href="https://xiaobaike.dpdns.org/index.html" class="footer-link">常用软件下载</a>
+                        <a href="https://diy.ee.cd/" target="_blank" rel="noopener" class="footer-link">视频封面生成</a>
+                        <a href="https://xiaobaike.dpdns.org/power.html" class="footer-link">电脑电源计算</a>
+                        <a href="https://windows.ee.cd/" target="_blank" rel="noopener" class="footer-link">WINDOWS系统下载</a>
                     </div>
                 </div>
                 <div id="contact">
@@ -2216,6 +2341,25 @@
         // ===== 回到顶部 =====
         backToTop.addEventListener('click', function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== 网站导航下拉 =====
+        const navDropdown = document.getElementById('navDropdown');
+        const navDropdownToggle = document.getElementById('navDropdownToggle');
+
+        // 点击切换（适配触屏 / 移动端）
+        navDropdownToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = navDropdown.classList.toggle('open');
+            navDropdownToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // 点击菜单外部时收起
+        document.addEventListener('click', function(e) {
+            if (navDropdown.classList.contains('open') && !navDropdown.contains(e.target)) {
+                navDropdown.classList.remove('open');
+                navDropdownToggle.setAttribute('aria-expanded', 'false');
+            }
         });
 
         // ===== FAQ 折叠展开 =====
