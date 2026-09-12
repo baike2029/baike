@@ -1,2435 +1,593 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>电脑小百科 · 专业电脑技术服务 | 远程维修技术支持 · 系统重装 · 故障处理</title>
-    <meta name="description" content="专业电脑技术服务，提供系统重装、远程故障处理、电脑卡顿修复、硬件检测等服务。单次50-200元，一个月售后保障，先诊断后报价。">
-    <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
-    <style>
-        /* ===== CSS 变量与基础重置 ===== */
-        :root {
-            --color-primary: #1a2b4a;
-            --color-primary-light: #243b63;
-            --color-primary-dark: #0f1a2e;
-            --color-accent: #00b4d8;
-            --color-accent-light: #48cae4;
-            --color-accent-dark: #0096c7;
-            --color-warm: #f59e0b;
-            --color-warm-light: #fbbf24;
-            --color-success: #10b981;
-            --color-success-light: #34d399;
-            --color-bg: #f5f7fa;
-            --color-bg-alt: #eef2f7;
-            --color-surface: #ffffff;
-            --color-text: #1f2937;
-            --color-text-secondary: #6b7280;
-            --color-text-muted: #9ca3af;
-            --color-border: #e5e7eb;
-            --color-border-light: #f3f4f6;
-            --font-sans: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            --font-mono: "JetBrains Mono", "Consolas", "Monaco", monospace;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 24px;
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-sans);
-            color: var(--color-text);
-            background-color: var(--color-bg);
-            line-height: 1.7;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        ul, ol {
-            list-style: none;
-        }
-
-        img {
-            max-width: 100%;
-            display: block;
-        }
-
-        button {
-            font-family: inherit;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .section {
-            padding: 80px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 56px;
-        }
-
-        .section-tag {
-            display: inline-block;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--color-accent-dark);
-            background: rgba(0, 180, 216, 0.1);
-            padding: 6px 14px;
-            border-radius: 100px;
-            margin-bottom: 16px;
-            letter-spacing: 0.5px;
-        }
-
-        .section-title {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--color-primary);
-            margin-bottom: 14px;
-            letter-spacing: -0.5px;
-        }
-
-        .section-subtitle {
-            font-size: 17px;
-            color: var(--color-text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* ===== 电路板纹理背景 ===== */
-        .circuit-bg {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .circuit-bg::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                linear-gradient(rgba(0, 180, 216, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 180, 216, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-        }
-
-        /* ===== 导航栏 ===== */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--color-border-light);
-            transition: var(--transition);
-        }
-
-        .navbar.scrolled {
-            box-shadow: var(--shadow-md);
-        }
-
-        .navbar-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 68px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-accent-dark));
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-primary);
-            letter-spacing: -0.3px;
-        }
-
-        .logo-text span {
-            color: var(--color-accent-dark);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 36px;
-        }
-
-        .nav-link {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .nav-link:hover {
-            color: var(--color-primary);
-        }
-
-        .nav-link::after {
-            content: "";
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--color-accent);
-            transition: var(--transition);
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .nav-cta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* ===== 网站导航下拉 ===== */
-        .nav-dropdown {
-            position: relative;
-        }
-
-        .nav-dropdown-toggle {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-            transition: var(--transition);
-        }
-
-        .nav-dropdown-toggle:hover {
-            color: var(--color-primary);
-        }
-
-        .nav-dropdown-toggle svg {
-            transition: transform 0.25s ease;
-        }
-
-        .nav-dropdown:hover .nav-dropdown-toggle,
-        .nav-dropdown.open .nav-dropdown-toggle {
-            color: var(--color-primary);
-        }
-
-        .nav-dropdown:hover .nav-dropdown-toggle svg,
-        .nav-dropdown.open .nav-dropdown-toggle svg {
-            transform: rotate(180deg);
-        }
-
-        .nav-dropdown-menu {
-            position: absolute;
-            top: calc(100% + 14px);
-            right: 0;
-            min-width: 180px;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border-light);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            padding: 8px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(8px);
-            transition: var(--transition);
-            z-index: 1001;
-        }
-
-        /* 悬停桥接区，防止鼠标移向下拉菜单途中菜单消失 */
-        .nav-dropdown-menu::before {
-            content: "";
-            position: absolute;
-            top: -14px;
-            left: 0;
-            right: 0;
-            height: 14px;
-        }
-
-        .nav-dropdown:hover .nav-dropdown-menu,
-        .nav-dropdown.open .nav-dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .nav-dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
-            white-space: nowrap;
-        }
-
-        .nav-dropdown-item:hover {
-            background: var(--color-bg);
-            color: var(--color-accent-dark);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 12px 28px;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(0, 180, 216, 0.35);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 180, 216, 0.45);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--color-primary);
-            border: 2px solid var(--color-border);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--color-accent);
-            color: var(--color-accent-dark);
-        }
-
-        .btn-warm {
-            background: linear-gradient(135deg, var(--color-warm), #d97706);
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
-        }
-
-        .btn-warm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
-        }
-
-        .btn-lg {
-            padding: 16px 36px;
-            font-size: 16px;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            padding: 8px;
-        }
-
-        .mobile-menu-btn span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--color-primary);
-            border-radius: 2px;
-            transition: var(--transition);
-        }
-
-        /* ===== Hero 区域 ===== */
-        .hero {
-            padding: 140px 0 80px;
-            background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary) 60%, var(--color-primary-light) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                radial-gradient(circle at 20% 30%, rgba(0, 180, 216, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(0, 180, 216, 0.1) 0%, transparent 40%);
-            pointer-events: none;
-        }
-
-        .hero-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                linear-gradient(rgba(0, 180, 216, 0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 180, 216, 0.06) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-        }
-
-        .hero-inner {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 180, 216, 0.15);
-            border: 1px solid rgba(0, 180, 216, 0.3);
-            color: var(--color-accent-light);
-            font-size: 13px;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 100px;
-            margin-bottom: 24px;
-        }
-
-        .hero-badge .pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--color-success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
-        }
-
-        .hero-title {
-            font-size: 48px;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1.25;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .hero-title .highlight {
-            background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.75);
-            margin-bottom: 36px;
-            line-height: 1.8;
-            max-width: 520px;
-        }
-
-        .hero-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .hero-trust {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            flex-wrap: wrap;
-        }
-
-        .trust-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .trust-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(0, 180, 216, 0.15);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .trust-text {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .trust-text strong {
-            display: block;
-            font-size: 18px;
-            color: #fff;
-            font-weight: 700;
-        }
-
-        /* Hero 右侧 - 终端窗口 */
-        .hero-visual {
-            position: relative;
-        }
-
-        .terminal-window {
-            background: #0d1117;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .terminal-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 18px;
-            background: #161b22;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .terminal-dot.red { background: #ff5f56; }
-        .terminal-dot.yellow { background: #ffbd2e; }
-        .terminal-dot.green { background: #27c93f; }
-
-        .terminal-title {
-            margin-left: 12px;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .terminal-body {
-            padding: 24px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            line-height: 2;
-            min-height: 320px;
-        }
-
-        .terminal-line {
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .terminal-line .prompt {
-            color: var(--color-success);
-        }
-
-        .terminal-line .command {
-            color: var(--color-accent-light);
-        }
-
-        .terminal-line .output {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .terminal-line .success {
-            color: var(--color-success);
-        }
-
-        .terminal-line .warning {
-            color: var(--color-warm-light);
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 16px;
-            background: var(--color-accent);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 2px;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .floating-card {
-            position: absolute;
-            background: #fff;
-            border-radius: var(--radius-md);
-            padding: 14px 18px;
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .floating-card.card-1 {
-            top: -20px;
-            right: -20px;
-            animation-delay: 0s;
-        }
-
-        .floating-card.card-2 {
-            bottom: 30px;
-            left: -30px;
-            animation-delay: 1.5s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .floating-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .floating-icon.green { background: rgba(16, 185, 129, 0.15); }
-        .floating-icon.blue { background: rgba(0, 180, 216, 0.15); }
-
-        .floating-text {
-            font-size: 13px;
-        }
-
-        .floating-text strong {
-            display: block;
-            font-size: 15px;
-            color: var(--color-primary);
-        }
-
-        .floating-text span {
-            color: var(--color-text-secondary);
-            font-size: 12px;
-        }
-
-        /* ===== 信任指标条 ===== */
-        .stats-bar {
-            background: var(--color-surface);
-            border-bottom: 1px solid var(--color-border-light);
-            padding: 40px 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 0 16px;
-            border-right: 1px solid var(--color-border-light);
-        }
-
-        .stat-item:last-child {
-            border-right: none;
-        }
-
-        .stat-number {
-            font-size: 40px;
-            font-weight: 900;
-            color: var(--color-primary);
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .stat-number .unit {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-accent-dark);
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--color-text-secondary);
-        }
-
-        /* ===== 服务项目 ===== */
-        .services {
-            background: var(--color-bg);
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .service-card {
-            background: var(--color-surface);
-            border-radius: var(--radius-lg);
-            padding: 32px 28px;
-            border: 1px solid var(--color-border-light);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark));
-            transform: scaleX(0);
-            transition: var(--transition);
-        }
-
-        .service-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-xl);
-            border-color: rgba(0, 180, 216, 0.2);
-        }
-
-        .service-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .service-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .service-icon.blue { background: linear-gradient(135deg, rgba(0, 180, 216, 0.15), rgba(0, 150, 199, 0.1)); }
-        .service-icon.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1)); }
-        .service-icon.warm { background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1)); }
-        .service-icon.purple { background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(124, 58, 237, 0.1)); }
-        .service-icon.red { background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1)); }
-        .service-icon.teal { background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(13, 148, 136, 0.1)); }
-
-        .service-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-primary);
-            margin-bottom: 10px;
-        }
-
-        .service-desc {
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            line-height: 1.7;
-            margin-bottom: 18px;
-        }
-
-        .service-features {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .service-feature {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: var(--color-text-secondary);
-        }
-
-        .service-feature svg {
-            flex-shrink: 0;
-        }
-
-        .service-price {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-            padding-top: 16px;
-            border-top: 1px solid var(--color-border-light);
-        }
-
-        .service-price .from {
-            font-size: 13px;
-            color: var(--color-text-muted);
-        }
-
-        .service-price .amount {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--color-accent-dark);
-        }
-
-        .service-price .unit {
-            font-size: 13px;
-            color: var(--color-text-secondary);
-        }
-
-        /* ===== 服务流程 ===== */
-        .process {
-            background: var(--color-surface);
-        }
-
-        .process-steps {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0;
-            position: relative;
-        }
-
-        .process-steps::before {
-            content: "";
-            position: absolute;
-            top: 44px;
-            left: 12.5%;
-            right: 12.5%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-light), var(--color-accent));
-            z-index: 0;
-        }
-
-        .process-step {
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .step-number {
-            width: 88px;
-            height: 88px;
-            background: var(--color-surface);
-            border: 3px solid var(--color-accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-family: var(--font-mono);
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--color-accent-dark);
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .process-step:hover .step-number {
-            background: var(--color-accent);
-            color: #fff;
-            transform: scale(1.08);
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.35);
-        }
-
-        .step-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--color-primary);
-            margin-bottom: 10px;
-        }
-
-        .step-desc {
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            line-height: 1.7;
-        }
-
-        /* ===== 价格方案 ===== */
-        .pricing {
-            background: var(--color-bg);
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            align-items: stretch;
-        }
-
-        .pricing-card {
-            background: var(--color-surface);
-            border-radius: var(--radius-lg);
-            padding: 36px 32px;
-            border: 2px solid var(--color-border-light);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .pricing-card.featured {
-            border-color: var(--color-accent);
-            box-shadow: 0 10px 40px rgba(0, 180, 216, 0.15);
-        }
-
-        .pricing-card.featured::before {
-            content: "最受欢迎";
-            position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
-            color: #fff;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 18px;
-            border-radius: 100px;
-            letter-spacing: 1px;
-        }
-
-        .pricing-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-primary);
-            margin-bottom: 8px;
-        }
-
-        .pricing-desc {
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            margin-bottom: 24px;
-        }
-
-        .pricing-amount {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-            margin-bottom: 8px;
-        }
-
-        .pricing-amount .currency {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--color-primary);
-        }
-
-        .pricing-amount .number {
-            font-size: 48px;
-            font-weight: 900;
-            color: var(--color-primary);
-            line-height: 1;
-        }
-
-        .pricing-amount .range {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--color-text-secondary);
-        }
-
-        .pricing-amount .per {
-            font-size: 14px;
-            color: var(--color-text-muted);
-            margin-left: 4px;
-        }
-
-        .pricing-note {
-            font-size: 13px;
-            color: var(--color-text-muted);
-            margin-bottom: 28px;
-        }
-
-        .pricing-features {
-            flex: 1;
-            margin-bottom: 28px;
-        }
-
-        .pricing-feature {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--color-border-light);
-            font-size: 14px;
-            color: var(--color-text-secondary);
-        }
-
-        .pricing-feature:last-child {
-            border-bottom: none;
-        }
-
-        .pricing-feature svg {
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .pricing-feature strong {
-            color: var(--color-text);
-            font-weight: 600;
-        }
-
-        /* ===== 售后保障 ===== */
-        .warranty {
-            background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .warranty::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                radial-gradient(circle at 30% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 70% 50%, rgba(0, 180, 216, 0.1) 0%, transparent 40%);
-            pointer-events: none;
-        }
-
-        .warranty-inner {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .warranty-content .section-tag {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--color-success-light);
-        }
-
-        .warranty-title {
-            font-size: 36px;
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 16px;
-            line-height: 1.3;
-        }
-
-        .warranty-title .highlight {
-            color: var(--color-success-light);
-        }
-
-        .warranty-desc {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.75);
-            margin-bottom: 32px;
-            line-height: 1.8;
-        }
-
-        .warranty-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .warranty-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-        }
-
-        .warranty-item-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(16, 185, 129, 0.15);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .warranty-item-text h4 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-
-        .warranty-item-text p {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.65);
-            line-height: 1.6;
-        }
-
-        .warranty-visual {
-            position: relative;
-        }
-
-        .warranty-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-xl);
-            padding: 40px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .warranty-badge {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, var(--color-success), #059669);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
-        }
-
-        .warranty-duration {
-            font-size: 56px;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .warranty-duration .unit {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--color-success-light);
-        }
-
-        .warranty-label {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-
-        .warranty-sub {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* ===== 常见问题 ===== */
-        .faq {
-            background: var(--color-surface);
-        }
-
-        .faq-grid {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .faq-item {
-            border: 1px solid var(--color-border-light);
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .faq-item:hover {
-            border-color: rgba(0, 180, 216, 0.3);
-        }
-
-        .faq-item.active {
-            border-color: var(--color-accent);
-            box-shadow: 0 4px 12px rgba(0, 180, 216, 0.1);
-        }
-
-        .faq-question {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-primary);
-            transition: var(--transition);
-            gap: 16px;
-        }
-
-        .faq-question:hover {
-            color: var(--color-accent-dark);
-        }
-
-        .faq-toggle {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--color-bg-alt);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: var(--transition);
-        }
-
-        .faq-item.active .faq-toggle {
-            background: var(--color-accent);
-            transform: rotate(45deg);
-        }
-
-        .faq-item.active .faq-toggle svg {
-            stroke: #fff;
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 300px;
-        }
-
-        .faq-answer-inner {
-            padding: 0 24px 20px;
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            line-height: 1.8;
-        }
-
-        /* ===== 页脚 ===== */
-        .footer {
-            background: var(--color-primary-dark);
-            padding: 60px 0 32px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 48px;
-        }
-
-        .footer-brand .logo-text {
-            color: #fff;
-            font-size: 22px;
-            margin-bottom: 16px;
-        }
-
-        .footer-brand p {
-            font-size: 14px;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.55);
-            margin-bottom: 20px;
-        }
-
-        .footer-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-link {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.55);
-            transition: var(--transition);
-        }
-
-        .footer-link:hover {
-            color: var(--color-accent-light);
-        }
-
-        .footer-bottom {
-            padding-top: 28px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .footer-copyright {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .footer-legal {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .footer-legal a {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.4);
-            transition: var(--transition);
-        }
-
-        .footer-legal a:hover {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* ===== 回到顶部 ===== */
-        .back-to-top {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            width: 48px;
-            height: 48px;
-            background: var(--color-primary);
-            color: #fff;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: var(--transition);
-            z-index: 999;
-        }
-
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .back-to-top:hover {
-            background: var(--color-accent-dark);
-            transform: translateY(-4px);
-        }
-
-        /* ===== 响应式设计 ===== */
-        @media (max-width: 1024px) {
-            .hero-inner {
-                grid-template-columns: 1fr;
-                gap: 48px;
-            }
-
-            .hero-visual {
-                max-width: 560px;
-                margin: 0 auto;
-            }
-
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-                max-width: 480px;
-                margin: 0 auto;
-            }
-
-            .warranty-inner {
-                grid-template-columns: 1fr;
-                gap: 48px;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 32px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .section {
-                padding: 56px 0;
-            }
-
-            .section-title {
-                font-size: 28px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: flex;
-            }
-
-            /* 移动端菜单内：网站导航改为点击展开 */
-            .nav-dropdown {
-                width: 100%;
-            }
-
-            .nav-dropdown-menu {
-                position: static;
-                display: none;
-                opacity: 1;
-                visibility: visible;
-                transform: none;
-                box-shadow: none;
-                border: none;
-                background: transparent;
-                padding: 4px 0 4px 16px;
-                min-width: 0;
-            }
-
-            .nav-dropdown-menu::before {
-                display: none;
-            }
-
-            .nav-dropdown.open .nav-dropdown-menu {
-                display: block;
-            }
-
-            .nav-dropdown-item {
-                padding: 10px 0;
-            }
-
-            .hero {
-                padding: 110px 0 56px;
-            }
-
-            .hero-title {
-                font-size: 34px;
-            }
-
-            .hero-subtitle {
-                font-size: 16px;
-            }
-
-            .hero-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .hero-actions .btn {
-                width: 100%;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 24px;
-            }
-
-            .stat-item {
-                border-right: none;
-            }
-
-            .stat-item:nth-child(odd) {
-                border-right: 1px solid var(--color-border-light);
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .process-steps {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-
-            .process-steps::before {
-                display: none;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 28px;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .floating-card {
-                display: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 16px;
-            }
-
-            .hero-title {
-                font-size: 28px;
-            }
-
-            .stat-number {
-                font-size: 32px;
-            }
-
-            .pricing-amount .number {
-                font-size: 40px;
-            }
-        }
-
-        /* ===== 减少动画偏好 ===== */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>视频封面免费在线一键制作生成器，DIY横屏竖屏视频封面生成制作</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Anton&family=Archivo+Black&family=Bangers&family=Bebas+Neue&family=Liu+Jian+Mao+Cao&family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&family=Playfair+Display:wght@700;900&family=ZCOOL+KuaiLe&family=ZCOOL+QingKe+HuangYou&family=ZCOOL+XiaoWei&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<!-- 开源/免费商用中文字体（jsDelivr CDN 按需分包加载；均可免费商用） -->
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-smiley-sans-oblique-regular/font.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-lxgw-wen-kai-screen/font.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-ding-talk-jin-bu-ti-regular/font.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-hongleixingshu-regular/font.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-alimama-dong-fang-da-kai-regular/font.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-maoken-zhuyuan-ti-regular/font.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-yozai/font.css" rel="stylesheet">
+
+
+
+    <link rel="stylesheet" href="index.css" />
 </head>
-<body>
-    <!-- ===== 导航栏 ===== -->
-    <nav class="navbar" id="navbar">
-        <div class="container">
-            <div class="navbar-inner">
-                <a href="#" class="logo">
-                    <div class="logo-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
-                        </svg>
-                    </div>
-                    <div class="logo-text">电脑<span>小百科</span></div>
-                </a>
-                <div class="nav-links">
-                    <a href="#services" class="nav-link">服务项目</a>
-                    <a href="#process" class="nav-link">服务流程</a>
-                    <a href="#pricing" class="nav-link">价格方案</a>
-                    <a href="#warranty" class="nav-link">售后保障</a>
-                    <a href="#faq" class="nav-link">常见问题</a>
-                    <div class="nav-dropdown" id="navDropdown">
-                        <button class="nav-dropdown-toggle" id="navDropdownToggle" aria-haspopup="true" aria-expanded="false">
-                            网站导航
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </button>
-                        <div class="nav-dropdown-menu">
-                            <a class="nav-dropdown-item" href="https://xiaobaike.dpdns.org/index.html">常用软件下载</a>
-                            <a class="nav-dropdown-item" href="https://diy.ee.cd/" target="_blank" rel="noopener">视频封面生成</a>
-                            <a class="nav-dropdown-item" href="https://xiaobaike.dpdns.org/ipower.html">电脑电源计算</a>
-                            <a class="nav-dropdown-item" href="https://windows.ee.cd/" target="_blank" rel="noopener">WINDOWS系统下载</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="nav-cta">
-                    <a href="#contact" class="btn btn-primary">立即咨询</a>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
+<body class="bg-grayBg min-h-screen flex flex-col">
+
+<!-- 顶部：站点导航 + 功能工具栏 合并为一行 -->
+<header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30 shrink-0">
+  <div class="max-w-[1400px] mx-auto px-4 min-h-[3.5rem] flex flex-wrap items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <i class="fa fa-magic text-primary text-2xl"></i>
+      <h1 class="text-lg font-bold text-gray-800 whitespace-nowrap">视频封面一键生成器 </h1>
+      <span class="w-px h-5 bg-slate-200 mx-1 hidden md:inline-block"></span>
+      <nav class="flex items-center gap-1 text-sm">
+        <a href="index.html" class="px-2.5 py-1.5 rounded-md bg-blue-50 text-blue-700 font-medium whitespace-nowrap">🖼️ 封面</a>
+        <a href="note.html" class="px-2.5 py-1.5 rounded-md hover:bg-slate-100 whitespace-nowrap">📒 笔记</a>
+        <a href="https://sofe.weget.site/" target="_blank" rel="noopener" class="px-2.5 py-1.5 rounded-md hover:bg-slate-100 hidden lg:inline whitespace-nowrap">⬇️ 软件</a>
+      </nav>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <button id="resetBtn" class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition whitespace-nowrap">
+        <i class="fa fa-undo mr-1"></i>重置全部
+      </button>
+      <button id="panelToggle" class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition whitespace-nowrap">
+        <i class="fa fa-bars mr-1"></i>收起素材栏
+      </button>
+      <select id="sizeSelect" class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white min-w-[150px]">
+        <option value="16:9">B站 / 横版 16:9</option>
+        <option value="4:3">PPT / 横版 4:3</option>
+        <option value="3:2">相机 / 横版 3:2</option>
+        <option value="1:1">正方形 1:1</option>
+        <option value="21:9">影院 / 超宽 21:9</option>
+        <option value="9:16">抖音 / 视频号 9:16</option>
+        <option value="3:4">小红书 / 竖版 3:4</option>
+        <option value="2:3">竖版 2:3</option>
+      </select>
+      <button id="exportBtn" class="bg-secondary text-white px-5 py-2 rounded-lg hover:opacity-90 transition flex items-center gap-2 whitespace-nowrap">
+        <i class="fa fa-download"></i> 导出封面
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- 上：编辑工具栏；下：画布。左侧素材栏可收起，画布随空间自动伸缩 -->
+<main class="w-full max-w-[1400px] mx-auto p-3 flex-1 flex flex-col lg:flex-row gap-3 relative
+             lg:h-[calc(100vh_-_7.5rem_+_150px)] lg:overflow-hidden">
+
+  <!-- 左侧素材栏（可收起；移动端排在画布下方） -->
+  <aside id="leftPanel" class="order-2 lg:order-1 left-panel bg-white rounded-xl shadow shrink-0
+                               w-full lg:w-[270px] lg:h-full scroll-panel">
+    <div class="p-4 w-[270px] max-w-full">
+      <h2 class="font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4 flex items-center gap-2">
+        <i class="fa fa-picture-o text-primary"></i>背景与模板
+      </h2>
+      <!-- 背景类型：纯色 / 渐变 / 图片 三选一 -->
+      <label class="block text-xs text-gray-500 mb-1.5">背景类型</label>
+      <div class="grid grid-cols-3 gap-1.5 mb-3">
+        <button data-bg-mode="color" class="bg-mode-btn">纯色</button>
+        <button data-bg-mode="gradient" class="bg-mode-btn">渐变</button>
+        <button data-bg-mode="image" class="bg-mode-btn active">图片</button>
+      </div>
+      <!-- 纯色背景：自定义取色 + 预设色板 -->
+      <div id="bgColorPanel" class="hidden mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <input id="bgSolidColor" type="color" value="#0f172a" class="tswatch"/>
+          <span class="text-xs text-gray-500">自定义颜色</span>
         </div>
-    </nav>
-
-    <!-- ===== Hero 区域 ===== -->
-    <section class="hero circuit-bg">
-        <div class="hero-grid"></div>
-        <div class="container">
-            <div class="hero-inner">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <span class="pulse"></span>
-                        工程师在线 · 平均15分钟响应
-                    </div>
-                    <h1 class="hero-title">
-                        电脑出问题不用愁<br>
-                        <span class="highlight">远程专业维修</span>一键解决
-                    </h1>
-                    <p class="hero-subtitle">
-                        系统重装、故障排查、卡顿修复、硬件检测——资深工程师远程一对一服务，先诊断后报价，不修好不收费。单次50元起，一个月售后保障。
-                    </p>
-                    <div class="hero-actions">
-                        <a href="#contact" class="btn btn-primary btn-lg">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                            </svg>
-                            立即预约维修
-                        </a>
-                        <a href="#services" class="btn btn-outline btn-lg" style="color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.3);">
-                            查看服务项目
-                        </a>
-                    </div>
-                    <div class="hero-trust">
-                        <div class="trust-item">
-                            <div class="trust-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#48cae4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                            </div>
-                            <div class="trust-text">
-                                <strong>5000+</strong>
-                                成功服务案例
-                            </div>
-                        </div>
-                        <div class="trust-item">
-                            <div class="trust-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#48cae4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                            </div>
-                            <div class="trust-text">
-                                <strong>98.6%</strong>
-                                客户好评率
-                            </div>
-                        </div>
-                        <div class="trust-item">
-                            <div class="trust-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#48cae4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                            </div>
-                            <div class="trust-text">
-                                <strong>15分钟</strong>
-                                平均响应时间
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-visual">
-                    <div class="terminal-window">
-                        <div class="terminal-header">
-                            <span class="terminal-dot red"></span>
-                            <span class="terminal-dot yellow"></span>
-                            <span class="terminal-dot green"></span>
-                            <span class="terminal-title">remote-diagnosis@jisuxiu</span>
-                        </div>
-                        <div class="terminal-body">
-                            <div class="terminal-line"><span class="prompt">$</span> <span class="command">connect --target user-pc</span></div>
-                            <div class="terminal-line"><span class="output">正在建立安全远程连接...</span></div>
-                            <div class="terminal-line"><span class="success">[OK]</span> <span class="output">连接已建立，通道加密 AES-256</span></div>
-                            <div class="terminal-line" style="margin-top:8px;"><span class="prompt">$</span> <span class="command">diagnose --full</span></div>
-                            <div class="terminal-line"><span class="output">正在扫描系统状态...</span></div>
-                            <div class="terminal-line"><span class="warning">[WARN]</span> <span class="output">检测到系统盘剩余空间不足 8%</span></div>
-                            <div class="terminal-line"><span class="warning">[WARN]</span> <span class="output">发现 3 个异常启动项占用资源</span></div>
-                            <div class="terminal-line"><span class="success">[OK]</span> <span class="output">硬件状态正常，无故障告警</span></div>
-                            <div class="terminal-line" style="margin-top:8px;"><span class="prompt">$</span> <span class="command">repair --optimize</span></div>
-                            <div class="terminal-line"><span class="output">正在执行系统优化...</span></div>
-                            <div class="terminal-line"><span class="success">[OK]</span> <span class="output">已清理临时文件 12.4GB</span></div>
-                            <div class="terminal-line"><span class="success">[OK]</span> <span class="output">已禁用异常启动项，释放内存 340MB</span></div>
-                            <div class="terminal-line"><span class="success">[DONE]</span> <span class="output">修复完成，系统性能提升 67%</span><span class="cursor"></span></div>
-                        </div>
-                    </div>
-                    <div class="floating-card card-1">
-                        <div class="floating-icon green">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                            </svg>
-                        </div>
-                        <div class="floating-text">
-                            <strong>修复完成</strong>
-                            <span>耗时 8 分钟</span>
-                        </div>
-                    </div>
-                    <div class="floating-card card-2">
-                        <div class="floating-icon blue">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <div class="floating-text">
-                            <strong>安全加密</strong>
-                            <span>远程连接受保护</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="solidPresetList" class="grid grid-cols-6 gap-1.5"></div>
+      </div>
+      <!-- 渐变背景：双色 + 方向 + 预设 -->
+      <div id="bgGradientPanel" class="hidden mb-3">
+        <div class="flex items-center gap-1.5 mb-2">
+          <input id="bgGradColor1" type="color" value="#e0c3fc" class="tswatch" title="起始色"/>
+          <i class="fa fa-long-arrow-right text-gray-300"></i>
+          <input id="bgGradColor2" type="color" value="#8ec5fc" class="tswatch" title="结束色"/>
+          <select id="bgGradAngle" class="tinput flex-1 min-w-0" title="渐变方向">
+            <option value="135">↘ 斜向</option>
+            <option value="90">→ 横向</option>
+            <option value="180">↓ 纵向</option>
+            <option value="45">↗ 斜向</option>
+          </select>
         </div>
-    </section>
-
-    <!-- ===== 信任指标条 ===== -->
-    <section class="stats-bar">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">5000<span class="unit">+</span></div>
-                    <div class="stat-label">累计服务用户</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">8<span class="unit">年</span></div>
-                    <div class="stat-label">行业技术经验</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">98.6<span class="unit">%</span></div>
-                    <div class="stat-label">客户满意度</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">30<span class="unit">天</span></div>
-                    <div class="stat-label">售后保障周期</div>
-                </div>
-            </div>
+        <div id="gradientPresetList" class="grid grid-cols-4 gap-1.5"></div>
+      </div>
+      <!-- 图片背景：上传 + 模板库 -->
+      <div id="bgImagePanel">
+        <div class="mb-3">
+          <label class="block text-xs text-gray-500 mb-1.5">上传背景图<span class="crop-upload-hint">上传后自动打开裁剪</span></label>
+          <input id="customBgInput" type="file" accept="image/*" class="w-full text-xs text-gray-500"/>
         </div>
-    </section>
+        <label class="text-sm text-gray-600 block mb-2">图片背景模板</label>
+        <div id="templateList" class="grid grid-cols-2 gap-2 mb-3"></div>
+      </div>
+      <div class="mb-5 flex items-center justify-end">
+        <button id="filterToggle" class="text-xs px-2 py-1 rounded border border-gray-200 text-primary hover:bg-blue-50 transition">滤镜：开</button>
+      </div>
+    </div>
+  </aside>
 
-    <!-- ===== 服务项目 ===== -->
-    <section class="services section" id="services">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// SERVICES</span>
-                <h2 class="section-title">专业服务项目</h2>
-                <p class="section-subtitle">覆盖电脑使用全场景，软件硬件一站式解决，让你的设备始终保持最佳状态</p>
-            </div>
-            <div class="services-grid">
-                <!-- 服务卡片 1 -->
-                <div class="service-card">
-                    <div class="service-icon blue">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
-                            <line x1="7" y1="8" x2="17" y2="8"></line>
-                            <line x1="7" y1="12" x2="13" y2="12"></line>
-                        </svg>
-                    </div>
-                    <h3 class="service-name">系统重装与优化</h3>
-                    <p class="service-desc">Windows / Mac 系统纯净安装，驱动完整匹配，系统深度优化，告别卡顿和蓝屏。</p>
-                    <div class="service-features">
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            原版纯净系统，无捆绑软件
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            重要数据备份与迁移
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            常用软件一键安装配置
-                        </div>
-                    </div>
-                    <div class="service-price">
-                        <span class="from">起</span>
-                        <span class="amount">80</span>
-                        <span class="unit">元 / 次</span>
-                    </div>
-                </div>
+  <!-- 左侧素材栏浮动收起 / 展开按钮（桌面端显示，随面板状态贴边移动） -->
+  <button id="panelFloatBtn" type="button" class="panel-float-btn" title="收起素材栏" aria-label="收起素材栏">
+    <i class="fa fa-chevron-left"></i>
+  </button>
 
-                <!-- 服务卡片 2 -->
-                <div class="service-card">
-                    <div class="service-icon green">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14M5 18h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="service-name">远程故障处理</h3>
-                    <p class="service-desc">无需出门，工程师远程连接你的电脑，实时排查并解决各类软件故障和系统异常。</p>
-                    <div class="service-features">
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            蓝屏、死机、无限重启修复
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            软件无法安装 / 报错处理
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            网络连接异常诊断修复
-                        </div>
-                    </div>
-                    <div class="service-price">
-                        <span class="from">起</span>
-                        <span class="amount">100</span>
-                        <span class="unit">元 / 次</span>
-                    </div>
-                </div>
+  <!-- 中间：工具栏 + 预览画布（合并为一张卡片，分割线分隔） -->
+  <section class="order-1 lg:order-2 flex-1 flex flex-col min-w-0 min-h-0 lg:h-full">
+    <div id="editorCard" class="editor-card flex-1 min-h-0 flex flex-col">
 
-                <!-- 服务卡片 3 -->
-                <div class="service-card">
-                    <div class="service-icon warm">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                    </div>
-                    <h3 class="service-name">电脑卡顿修复</h3>
-                    <p class="service-desc">深度清理系统垃圾、优化启动项、释放内存资源，让老旧电脑重获新生，运行如飞。</p>
-                    <div class="service-features">
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            开机速度优化，启动项管理
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            系统垃圾与注册表深度清理
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            内存占用过高问题解决
-                        </div>
-                    </div>
-                    <div class="service-price">
-                        <span class="from">起</span>
-                        <span class="amount">100</span>
-                        <span class="unit">元 / 次</span>
-                    </div>
-                </div>
+    <!-- 编辑工具栏（单区块）：文字设置 / 文字位置 / 图片滤镜 / 贴纸库 -->
+    <div id="toolPanel" class="px-4 py-3 shrink-0 max-h-[46vh] lg:max-h-[340px] overflow-y-auto scroll-panel">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-12 gap-x-5 gap-y-3 items-start">
 
-                <!-- 服务卡片 4 -->
-                <div class="service-card">
-                    <div class="service-icon purple">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-                            <rect x="9" y="9" width="6" height="6"></rect>
-                            <line x1="9" y1="1" x2="9" y2="4"></line>
-                            <line x1="15" y1="1" x2="15" y2="4"></line>
-                            <line x1="9" y1="20" x2="9" y2="23"></line>
-                            <line x1="15" y1="20" x2="15" y2="23"></line>
-                            <line x1="20" y1="9" x2="23" y2="9"></line>
-                            <line x1="20" y1="14" x2="23" y2="14"></line>
-                            <line x1="1" y1="9" x2="4" y2="9"></line>
-                            <line x1="1" y1="14" x2="4" y2="14"></line>
-                        </svg>
-                    </div>
-                    <h3 class="service-name">硬件检测与评估</h3>
-                    <p class="service-desc">专业工具全面检测 CPU、内存、硬盘、显卡等核心硬件，出具健康报告和升级建议。</p>
-                    <div class="service-features">
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            硬盘健康度与坏道检测
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            内存稳定性压力测试
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            硬件性能评估与升级建议
-                        </div>
-                    </div>
-                    <div class="service-price">
-                        <span class="from">起</span>
-                        <span class="amount">50</span>
-                        <span class="unit">元 / 次</span>
-                    </div>
-                </div>
-
-                <!-- 服务卡片 5 -->
-                <div class="service-card">
-                    <div class="service-icon red">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                    </div>
-                    <h3 class="service-name">病毒查杀与防护</h3>
-                    <p class="service-desc">彻底清除病毒、木马、恶意软件和弹窗广告，安装专业防护方案，守护数据安全。</p>
-                    <div class="service-features">
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            深度病毒木马查杀清除
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            弹窗广告与捆绑软件清理
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            浏览器主页劫持修复
-                        </div>
-                    </div>
-                    <div class="service-price">
-                        <span class="from">起</span>
-                        <span class="amount">60</span>
-                        <span class="unit">元 / 次</span>
-                    </div>
-                </div>
-
-                <!-- 服务卡片 6 -->
-                <div class="service-card">
-                    <div class="service-icon teal">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                        </svg>
-                    </div>
-                    <h3 class="service-name">数据备份与恢复</h3>
-                    <p class="service-desc">误删文件、格式化分区、硬盘损坏等数据丢失场景，专业工具尽最大可能找回重要资料。</p>
-                    <div class="service-features">
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            误删除文件恢复
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            格式化分区数据找回
-                        </div>
-                        <div class="service-feature">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            系统崩溃前重要文件抢救
-                        </div>
-                    </div>
-                    <div class="service-price">
-                        <span class="from">起</span>
-                        <span class="amount">100</span>
-                        <span class="unit">元 / 次</span>
-                    </div>
-                </div>
-            </div>
+        <!-- 主标题（独立：内容 / 字号 / 字体 / 颜色 / 字重 / 字间距） -->
+        <div id="group-main" class="tgroup sm:col-span-1 xl:col-span-4">
+          <span class="tgroup-title">主标题</span>
+          <div class="flex gap-2">
+            <input id="mainTitle" class="tinput flex-1 min-w-0" value="视频封面一键生成"/>
+            <select id="mainSize" class="tinput shrink-0" style="width:4.5rem" title="字号">
+              <option value="16">16px</option>
+              <option value="18">18px</option>
+              <option value="20">20px</option>
+              <option value="22">22px</option>
+              <option value="24">24px</option>
+              <option value="26">26px</option>
+              <option value="28">28px</option>
+              <option value="32">32px</option>
+              <option value="36">36px</option>
+              <option value="40">40px</option>
+              <option value="44">44px</option>
+              <option value="48">48px</option>
+              <option value="54">54px</option>
+              <option value="60">60px</option>
+              <option value="66">66px</option>
+              <option value="72">72px</option>
+              <option value="80">80px</option>
+              <option value="90">90px</option>
+              <option value="100" selected>100px</option>
+              <option value="110">110px</option>
+              <option value="120">120px</option>
+              <option value="130">130px</option>
+              <option value="140">140px</option>
+            </select>
+          </div>
+          <div class="flex gap-2">
+          <select id="mainFontFamily" class="tinput flex-1 min-w-0" title="主标题字体">
+            <option value="font-cover-bold">粗黑体（标题首选）</option>
+            <option value="font-cover-serif">粗宋体</option>
+            <option value="font-cover-butter">黄油体（圆润醒目）</option>
+            <option value="font-cover-xiaowei">小薇宋（文艺优雅）</option>
+            <option value="font-cover-cute">圆润可爱体</option>
+            <option value="font-cover-hand">手写标题体</option>
+            <option value="font-cover-brush">毛笔手写字</option>
+            <option value="font-cover-xingshu">行书（洒脱飘逸）</option>
+            <option value="font-cover-maocao">狂草（个性张扬）</option>
+            <option value="font-cover-title">工业标题体（英文）</option>
+            <option value="font-cover-anton">Anton 海报压缩体（英文）</option>
+            <option value="font-cover-archivo">Archivo 粗黑（英文）</option>
+            <option value="font-cover-slab">Alfa Slab 复古衬线（英文）</option>
+            <option value="font-cover-bangers">Bangers 漫画海报（英文）</option>
+            <option value="font-cover-playfair">Playfair 优雅衬线（英文）</option>
+            <option value="font-cover-smiley">得意黑（斜体运动感）</option>
+            <option value="font-cover-jinbu">钉钉进步体（硬朗有力）</option>
+            <option value="font-cover-dongkai">东方大楷（颜体气势）</option>
+            <option value="font-cover-honglei">鸿雷行书（飘逸大字）</option>
+            <option value="font-cover-wenkai">霞鹜文楷（温润文艺）</option>
+            <option value="font-cover-zhuyuan">猫啃珠圆（可爱圆体）</option>
+            <option value="font-cover-yozai">悠哉体（慵懒手写）</option>
+          </select>
+          <select id="mainDirection" class="tinput shrink-0" style="width:5.4rem" title="排版方向">
+            <option value="horizontal">横排</option>
+            <option value="vertical">竖排</option>
+          </select>
+          </div>
+          <div class="trow">
+            <span class="tname w-8">颜色</span>
+            <input id="mainColor" type="color" value="#ffffff" class="tswatch"/>
+            <span class="tname">字重</span>
+            <select id="mainFontWeight" class="tinput flex-1 min-w-0">
+              <option value="normal">正常</option>
+              <option value="bold" selected>粗体</option>
+              <option value="900">超粗</option>
+            </select>
+            <span class="tname">间距</span>
+            <input id="mainLetterSpacing" type="number" value="1" class="tinput shrink-0" style="width:3rem"/>
+          </div>
+          <div class="trow">
+            <span class="tname w-8">旋转</span>
+            <input id="mainRotate" type="number" value="0" min="0" max="360" class="tinput shrink-0" style="width:3.4rem" title="旋转角度 0-360°"/>
+            <button type="button" class="rot-btn" data-rot-for="mainRotate" data-rot-delta="-90" title="左转 90°"><i class="fa fa-undo"></i> 90°</button>
+            <button type="button" class="rot-btn" data-rot-for="mainRotate" data-rot-delta="90" title="右转 90°"><i class="fa fa-repeat"></i> 90°</button>
+            <button type="button" class="rot-btn" data-rot-for="mainRotate" data-rot-delta="0" title="角度归零">0°</button>
+          </div>
         </div>
-    </section>
 
-    <!-- ===== 服务流程 ===== -->
-    <section class="process section" id="process">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// PROCESS</span>
-                <h2 class="section-title">简单四步，快速解决</h2>
-                <p class="section-subtitle">标准化服务流程，透明高效，每一步都让你放心</p>
-            </div>
-            <div class="process-steps">
-                <div class="process-step">
-                    <div class="step-number">01</div>
-                    <h3 class="step-title">描述问题</h3>
-                    <p class="step-desc">通过联系方式告知电脑故障现象，工程师初步判断问题类型和难易程度</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">02</div>
-                    <h3 class="step-title">确认报价</h3>
-                    <p class="step-desc">根据故障情况给出明确报价，50-200元区间，确认后再开始服务，无隐藏费用</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">03</div>
-                    <h3 class="step-title">远程维修</h3>
-                    <p class="step-desc">通过安全加密的远程工具连接，工程师全程操作，你可以实时观看维修过程</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">04</div>
-                    <h3 class="step-title">验收交付</h3>
-                    <p class="step-desc">问题解决后你亲自验收确认，服务完成起享受一个月售后保障，同类问题免费处理</p>
-                </div>
-            </div>
+        <!-- 副标题（独立：内容 / 字号 / 字体 / 颜色 / 字重 / 字间距） -->
+        <div id="group-sub" class="tgroup sm:col-span-1 xl:col-span-4">
+          <span class="tgroup-title">副标题</span>
+          <div class="flex gap-2">
+            <input id="subTitle" class="tinput flex-1 min-w-0" value="Ps.weget.site"/>
+            <select id="subSize" class="tinput shrink-0" style="width:4.5rem" title="字号">
+              <option value="12">12px</option>
+              <option value="14">14px</option>
+              <option value="16">16px</option>
+              <option value="18">18px</option>
+              <option value="20">20px</option>
+              <option value="22">22px</option>
+              <option value="24">24px</option>
+              <option value="26">26px</option>
+              <option value="28">28px</option>
+              <option value="30">30px</option>
+              <option value="32">32px</option>
+              <option value="36">36px</option>
+              <option value="40">40px</option>
+              <option value="44">44px</option>
+              <option value="48">48px</option>
+              <option value="54" selected>54px</option>
+              <option value="60">60px</option>
+              <option value="66">66px</option>
+              <option value="72">72px</option>
+              <option value="80">80px</option>
+              <option value="90">90px</option>
+            </select>
+          </div>
+          <div class="flex gap-2">
+          <select id="subFontFamily" class="tinput flex-1 min-w-0" title="副标题字体">
+            <option value="font-cover-sub">清晰黑体</option>
+            <option value="font-cover-bold">粗黑体</option>
+            <option value="font-cover-serif">宋体</option>
+            <option value="font-cover-cute">圆润可爱体</option>
+            <option value="font-cover-butter">黄油体</option>
+            <option value="font-cover-xiaowei">小薇宋</option>
+            <option value="font-cover-playfair">Playfair 优雅衬线（英文）</option>
+            <option value="font-cover-wenkai">霞鹜文楷（文艺）</option>
+            <option value="font-cover-zhuyuan">猫啃珠圆（可爱）</option>
+            <option value="font-cover-yozai">悠哉体（手写）</option>
+            <option value="font-cover-smiley">得意黑（斜体）</option>
+          </select>
+          <select id="subDirection" class="tinput shrink-0" style="width:5.4rem" title="排版方向">
+            <option value="horizontal">横排</option>
+            <option value="vertical">竖排</option>
+          </select>
+          </div>
+          <div class="trow">
+            <span class="tname w-8">颜色</span>
+            <input id="subColor" type="color" value="#ffdd44" class="tswatch"/>
+            <span class="tname">字重</span>
+            <select id="subFontWeight" class="tinput flex-1 min-w-0">
+              <option value="normal">正常</option>
+              <option value="bold" selected>粗体</option>
+              <option value="900">超粗</option>
+            </select>
+            <span class="tname">间距</span>
+            <input id="subLetterSpacing" type="number" value="1" class="tinput shrink-0" style="width:3rem"/>
+          </div>
+          <div class="trow">
+            <span class="tname w-8">旋转</span>
+            <input id="subRotate" type="number" value="0" min="0" max="360" class="tinput shrink-0" style="width:3.4rem" title="旋转角度 0-360°"/>
+            <button type="button" class="rot-btn" data-rot-for="subRotate" data-rot-delta="-90" title="左转 90°"><i class="fa fa-undo"></i> 90°</button>
+            <button type="button" class="rot-btn" data-rot-for="subRotate" data-rot-delta="90" title="右转 90°"><i class="fa fa-repeat"></i> 90°</button>
+            <button type="button" class="rot-btn" data-rot-for="subRotate" data-rot-delta="0" title="角度归零">0°</button>
+          </div>
         </div>
-    </section>
 
-    <!-- ===== 价格方案 ===== -->
-    <section class="pricing section" id="pricing">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// PRICING</span>
-                <h2 class="section-title">透明收费标准</h2>
-                <p class="section-subtitle">先诊断后报价，明码标价无套路，不修好不收费</p>
+        <!-- 三级标题（按需添加，独立：内容 / 字号 / 字体 / 颜色 / 字重 / 字间距） -->
+        <div id="group-third" class="tgroup sm:col-span-1 xl:col-span-4">
+          <span class="tgroup-title">三级标题</span>
+          <div id="thirdAddRow">
+            <button id="addThirdBtn" class="tbtn w-full" style="border-style:dashed"><i class="fa fa-plus mr-1"></i>添加三级标题</button>
+          </div>
+          <div id="thirdEditRow" class="flex flex-col gap-1.5 hidden">
+            <div class="flex gap-2">
+              <input id="thirdTitle" class="tinput flex-1 min-w-0" value="三级标题"/>
+              <select id="thirdSize" class="tinput shrink-0" style="width:4.5rem" title="字号">
+                <option value="12">12px</option>
+                <option value="14">14px</option>
+                <option value="16">16px</option>
+                <option value="18">18px</option>
+                <option value="20">20px</option>
+                <option value="22">22px</option>
+                <option value="24">24px</option>
+                <option value="26">26px</option>
+                <option value="28">28px</option>
+                <option value="30" selected>30px</option>
+                <option value="32">32px</option>
+                <option value="36">36px</option>
+                <option value="40">40px</option>
+                <option value="44">44px</option>
+                <option value="48">48px</option>
+                <option value="54">54px</option>
+                <option value="60">60px</option>
+              </select>
+              <button id="removeThirdBtn" class="tbtn hover:!border-red-300 hover:!bg-red-50 hover:!text-red-500" title="删除三级标题"><i class="fa fa-trash"></i></button>
             </div>
-            <div class="pricing-grid">
-                <!-- 基础版 -->
-                <div class="pricing-card">
-                    <h3 class="pricing-name">基础维修</h3>
-                    <p class="pricing-desc">常见简单故障，快速处理</p>
-                    <div class="pricing-amount">
-                        <span class="currency">¥</span>
-                        <span class="number">50</span>
-                        <span class="range">-80</span>
-                        <span class="per">/ 次</span>
-                    </div>
-                    <p class="pricing-note">适用于简单软件问题</p>
-                    <div class="pricing-features">
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>软件安装</strong>与配置问题</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>网络设置</strong>与连接故障</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>硬件检测</strong>基础版</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>一个月</strong>售后保障</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span>远程协助，<strong>30分钟内</strong>响应</span>
-                        </div>
-                    </div>
-                    <a href="#contact" class="btn btn-outline" style="width:100%;">选择此方案</a>
-                </div>
-
-                <!-- 标准版 -->
-                <div class="pricing-card featured">
-                    <h3 class="pricing-name">标准维修</h3>
-                    <p class="pricing-desc">大多数常见故障，深度处理</p>
-                    <div class="pricing-amount">
-                        <span class="currency">¥</span>
-                        <span class="number">100</span>
-                        <span class="range">-200</span>
-                        <span class="per">/ 次</span>
-                    </div>
-                    <p class="pricing-note">适用于系统级故障处理</p>
-                    <div class="pricing-features">
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>系统重装</strong>与驱动配置</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>蓝屏死机</strong>等系统故障修复</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>电脑卡顿</strong>深度优化清理</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>病毒查杀</strong>与系统防护配置</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>一个月</strong>售后保障 + 优先响应</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span>数据备份指导，<strong>15分钟内</strong>响应</span>
-                        </div>
-                    </div>
-                    <a href="#contact" class="btn btn-primary" style="width:100%;">选择此方案</a>
-                </div>
-
-                <!-- 高级版 -->
-                <div class="pricing-card">
-                    <h3 class="pricing-name">深度维修</h3>
-                    <p class="pricing-desc">复杂疑难故障，全力解决</p>
-                    <div class="pricing-amount">
-                        <span class="currency">¥</span>
-                        <span class="number">200</span>
-                        <span class="range">-500</span>
-                        <span class="per">/ 次</span>
-                    </div>
-                    <p class="pricing-note">适用于复杂疑难问题</p>
-                    <div class="pricing-features">
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>数据恢复</strong>误删/格式化</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>顽固病毒</strong>深度清除</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>硬件深度检测</strong>与压力测试</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>多系统</strong>安装与配置</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span><strong>一个月</strong>售后保障 + VIP通道</span>
-                        </div>
-                        <div class="pricing-feature">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span>专属工程师，<strong>10分钟内</strong>响应</span>
-                        </div>
-                    </div>
-                    <a href="#contact" class="btn btn-outline" style="width:100%;">选择此方案</a>
-                </div>
+            <div class="flex gap-2">
+            <select id="thirdFontFamily" class="tinput flex-1 min-w-0" title="三级标题字体">
+              <option value="font-cover-sub">清晰黑体</option>
+              <option value="font-cover-bold">粗黑体</option>
+              <option value="font-cover-serif">宋体</option>
+              <option value="font-cover-cute">圆润可爱体</option>
+              <option value="font-cover-butter">黄油体</option>
+              <option value="font-cover-xiaowei">小薇宋</option>
+              <option value="font-cover-playfair">Playfair 优雅衬线（英文）</option>
+              <option value="font-cover-wenkai">霞鹜文楷（文艺）</option>
+              <option value="font-cover-zhuyuan">猫啃珠圆（可爱）</option>
+              <option value="font-cover-yozai">悠哉体（手写）</option>
+            </select>
+            <select id="thirdDirection" class="tinput shrink-0" style="width:5.4rem" title="排版方向">
+              <option value="horizontal">横排</option>
+              <option value="vertical">竖排</option>
+            </select>
             </div>
-            <p style="text-align:center; margin-top:32px; font-size:14px; color:var(--color-text-secondary);">
-                以上价格为参考区间，具体费用根据故障实际情况确定，先诊断后报价，不修好不收费
-            </p>
+            <div class="trow">
+              <span class="tname w-8">颜色</span>
+              <input id="thirdColor" type="color" value="#ffffff" class="tswatch"/>
+              <span class="tname">字重</span>
+              <select id="thirdFontWeight" class="tinput flex-1 min-w-0">
+                <option value="normal">正常</option>
+                <option value="bold" selected>粗体</option>
+                <option value="900">超粗</option>
+              </select>
+              <span class="tname">间距</span>
+              <input id="thirdLetterSpacing" type="number" value="1" class="tinput shrink-0" style="width:3rem"/>
+            </div>
+            <div class="trow">
+              <span class="tname w-8">旋转</span>
+              <input id="thirdRotate" type="number" value="0" min="0" max="360" class="tinput shrink-0" style="width:3.4rem" title="旋转角度 0-360°"/>
+              <button type="button" class="rot-btn" data-rot-for="thirdRotate" data-rot-delta="-90" title="左转 90°"><i class="fa fa-undo"></i> 90°</button>
+              <button type="button" class="rot-btn" data-rot-for="thirdRotate" data-rot-delta="90" title="右转 90°"><i class="fa fa-repeat"></i> 90°</button>
+              <button type="button" class="rot-btn" data-rot-for="thirdRotate" data-rot-delta="0" title="角度归零">0°</button>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <!-- ===== 售后保障 ===== -->
-    <section class="warranty section" id="warranty">
-        <div class="container">
-            <div class="warranty-inner">
-                <div class="warranty-content">
-                    <span class="section-tag">// WARRANTY</span>
-                    <h2 class="warranty-title">一个月售后保障<br><span class="highlight">修不好不收费</span></h2>
-                    <p class="warranty-desc">我们对每一次服务负责到底。服务完成后一个月内，如遇本次修复的同类问题再次出现，免费远程处理，让你无后顾之忧。</p>
-                    <div class="warranty-list">
-                        <div class="warranty-item">
-                            <div class="warranty-item-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                            </div>
-                            <div class="warranty-item-text">
-                                <h4>同类问题免费返修</h4>
-                                <p>服务完成后30天内，本次修复的同类问题再次出现，免费远程处理，不收取任何费用</p>
-                            </div>
-                        </div>
-                        <div class="warranty-item">
-                            <div class="warranty-item-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                            </div>
-                            <div class="warranty-item-text">
-                                <h4>优先响应通道</h4>
-                                <p>售后用户享受优先排队，工程师第一时间接入处理，无需等待，问题快速解决</p>
-                            </div>
-                        </div>
-                        <div class="warranty-item">
-                            <div class="warranty-item-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                </svg>
-                            </div>
-                            <div class="warranty-item-text">
-                                <h4>服务记录可追溯</h4>
-                                <p>每次服务都有完整记录，售后时工程师可快速查阅历史操作，精准定位问题根源</p>
-                            </div>
-                        </div>
-                        <div class="warranty-item">
-                            <div class="warranty-item-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                    <polyline points="9 12 11 14 15 10"></polyline>
-                                </svg>
-                            </div>
-                            <div class="warranty-item-text">
-                                <h4>不修好不收费</h4>
-                                <p>如果问题未能解决，不收取任何服务费用。我们对技术有信心，也对你负责</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="warranty-visual">
-                    <div class="warranty-card">
-                        <div class="warranty-badge">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                <polyline points="9 12 11 14 15 10"></polyline>
-                            </svg>
-                        </div>
-                        <div class="warranty-duration">30<span class="unit">天</span></div>
-                        <div class="warranty-label">售后保障周期</div>
-                        <p class="warranty-sub">同类问题免费处理 · 优先响应通道<br>服务记录可追溯 · 修不好不收费</p>
-                    </div>
-                </div>
+
+        <!-- 装饰 / 描边 / 阴影：同一行排列，滑条窄宽度 -->
+        <div class="sm:col-span-2 xl:col-span-12 flex flex-wrap items-start gap-x-6 gap-y-3">
+          <!-- 文字样式预设：下拉选择，一键套用适合封面的 配色/描边/阴影 组合 -->
+          <div class="tgroup">
+            <span class="tgroup-title">文字样式预设</span>
+            <div class="trow">
+              <span id="presetDot" class="style-preset-dot" style="background:#ffffff;border:2px solid #000000;" title="当前预设预览"></span>
+              <select id="textStylePreset" class="tinput flex-1 min-w-0" style="min-width:8.5rem" title="一键套用文字样式">
+                <option value="">选择样式预设…</option>
+              </select>
             </div>
+          </div>
+          <!-- 装饰 -->
+          <div class="tgroup">
+            <span class="tgroup-title">装饰</span>
+            <div id="decorList" class="flex flex-wrap gap-2"></div>
+          </div>
+          <!-- 描边（所有文字共用） -->
+          <div class="tgroup">
+            <span class="tgroup-title">描边</span>
+            <div class="trow">
+              <input id="strokeColor" type="color" value="#000000" class="tswatch"/>
+              <span class="tname">大小</span>
+              <input id="strokeSize" type="range" min="0" max="14" value="2" class="w-28"/>
+              <b class="tval w-10"><span id="strokeSizeLabel">2</span>px</b>
+            </div>
+          </div>
+          <!-- 阴影（所有文字共用） -->
+          <div class="tgroup">
+            <span class="tgroup-title">阴影</span>
+            <div class="trow">
+              <input id="shadowColor" type="color" value="#000000" class="tswatch"/>
+              <span class="tname">强度</span>
+              <input id="shadow" type="range" min="0" max="24" value="5" class="w-28"/>
+              <b class="tval w-10"><span id="shadowLabel">5</span>px</b>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <!-- ===== 常见问题 ===== -->
-    <section class="faq section" id="faq">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// FAQ</span>
-                <h2 class="section-title">常见问题解答</h2>
-                <p class="section-subtitle">你可能想了解的问题，我们都整理好了</p>
-            </div>
-            <div class="faq-grid">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>远程维修安全吗？我的隐私数据会泄露吗？</span>
-                        <div class="faq-toggle">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            远程连接采用行业标准的加密通道（AES-256加密），全程你可以实时观看操作过程，随时可以断开连接。工程师只处理你授权的故障问题，不会主动浏览你的个人文件。维修完成后远程连接立即断开，不会留下任何后门或监控程序。我们承诺严格保护用户隐私，如有数据安全顾虑，可提前将敏感文件转移或加密。
-                        </div>
-                    </div>
-                </div>
+      </div>
 
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>远程维修需要我准备什么？操作复杂吗？</span>
-                        <div class="faq-toggle">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            操作非常简单，你只需要：1）确保电脑能正常上网；2）工程师会发给你一个远程协助工具（通常是绿色免安装版，双击运行即可）；3）把工具显示的连接ID和密码告诉工程师；4）工程师连接后你只需看着操作，偶尔按提示确认即可。整个过程不需要你有任何技术基础，工程师会一步步引导你完成。如果电脑无法开机或完全无法联网，远程方式可能不适用，我们会告知你替代方案。
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>具体费用怎么定？会不会修到一半加价？</span>
-                        <div class="faq-toggle">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            我们采用"先诊断后报价"模式：你先描述故障现象，工程师初步判断后给出明确报价区间（50-200元），你确认同意后才开始维修。维修过程中如果发现实际问题比预期复杂，工程师会先暂停并告知你情况和调整后的费用，取得你的同意后才继续，绝对不会未经允许擅自加价。如果最终问题未能解决，不收取任何费用。所有收费透明公开，拒绝套路和隐形消费。
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>一个月售后具体保障什么？哪些情况不在范围内？</span>
-                        <div class="faq-toggle">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            售后保障范围：服务完成后30天内，本次维修处理的同类问题再次出现，免费远程处理。例如本次修了蓝屏问题，一个月内同样的蓝屏故障复发，免费修复。不在售后范围的情况：1）新出现的、与本次维修无关的其他故障；2）硬件物理损坏（如硬盘摔坏、进水等）；3）人为误操作导致的问题（如自行删除系统文件、强制断电等）；4）安装新软件或系统更新后引发的新问题。如不确定是否在售后范围内，随时联系工程师确认即可。
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>系统重装会丢失我的文件和数据吗？</span>
-                        <div class="faq-toggle">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            系统重装默认只格式化C盘（系统盘），桌面上的文件、C盘里的资料会被清除，D盘、E盘等其他分区的数据不受影响。工程师在操作前会：1）详细告知哪些位置的数据会被清除；2）帮你把桌面、文档、收藏夹等重要数据备份到其他分区或外接存储；3）确认备份完成后才开始重装。如果你有特别重要的数据，请提前告知工程师，我们会格外小心处理。强烈建议平时养成重要数据多备份的习惯，避免意外情况造成损失。
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>服务时间是什么时候？晚上或周末可以维修吗？</span>
-                        <div class="faq-toggle">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            我们的服务时间为每天 9:00 - 23:00，周末和节假日正常服务，无需等到工作日。一般情况下15分钟内响应，高峰期可能稍作等待。如果是紧急情况（如重要工作需要立即处理），可以在联系时说明"加急"，我们会尽量优先安排。晚上22:00之后的服务如非紧急建议预约到次日，以保证工程师有充足精力为你提供高质量服务。
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== 页脚 ===== -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="logo-text">电脑<span style="color:var(--color-accent);">小百科</span></div>
-                    <p>专业电脑技术服务，提供系统重装、远程故障处理、电脑卡顿修复、硬件检测等一站式服务。资深工程师团队，透明收费，一个月售后保障，让每一位用户用得放心。</p>
-                </div>
-                <div>
-                    <h4 class="footer-title">服务项目</h4>
-                    <div class="footer-links">
-                        <a href="#services" class="footer-link">系统重装与优化</a>
-                        <a href="#services" class="footer-link">远程故障处理</a>
-                        <a href="#services" class="footer-link">电脑卡顿修复</a>
-                        <a href="#services" class="footer-link">硬件检测评估</a>
-                        <a href="#services" class="footer-link">病毒查杀防护</a>
-                        <a href="#services" class="footer-link">数据备份恢复</a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="footer-title">网站导航</h4>
-                    <div class="footer-links">
-                        <a href="https://xiaobaike.dpdns.org/index.html" class="footer-link">常用软件下载</a>
-                        <a href="https://diy.ee.cd/" target="_blank" rel="noopener" class="footer-link">视频封面生成</a>
-                        <a href="https://xiaobaike.dpdns.org/power.html" class="footer-link">电脑电源计算</a>
-                        <a href="https://windows.ee.cd/" target="_blank" rel="noopener" class="footer-link">WINDOWS系统下载</a>
-                    </div>
-                </div>
-                <div id="contact">
-                    <h4 class="footer-title">联系方式</h4>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link">微信：e259800</a>
-                        <a href="#" class="footer-link">QQ：2591735711</a>
-                        <a href="#" class="footer-link">邮箱：2591735711@qq.com</a>
-                        <a href="#" class="footer-link">服务时间：9:00 - 23:00</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    &copy; 2026 电脑小百科电脑技术服务. 保留所有权利.
-                </div>
-                <div class="footer-legal">
-                    <a href="#">服务条款</a>
-                    <a href="#">隐私政策</a>
-                    <a href="#">免责声明</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ===== 回到顶部按钮 ===== -->
-    <div class="back-to-top" id="backToTop" aria-label="回到顶部">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
     </div>
 
-    <script>
-        // ===== 导航栏滚动效果 =====
-        const navbar = document.getElementById('navbar');
-        const backToTop = document.getElementById('backToTop');
+    <!-- 工具栏与画布之间的分割线 -->
+    <div class="editor-divider" aria-hidden="true"></div>
 
-        function handleScroll() {
-            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-            if (scrollY > 400) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
-        }
+    <!-- 预览画布（卡片内衬底区域，画布铺满宽度，高度超出时可滚动查看） -->
+    <div id="stageArea" class="flex-1 min-h-0 h-[52vh] lg:h-auto flex justify-center overflow-x-hidden overflow-y-auto scroll-panel p-1.5 sm:p-2">
+      <div id="stageWrap" class="w-full m-auto">
+        <div id="stageScaler" class="relative">
+          <div id="coverStage" class="cover-stage">
+            <!-- 纯色/渐变背景层：与背景图互斥显示，滤镜同样作用，导出所见即所得 -->
+            <div id="bgColorLayer" class="absolute inset-0 hidden"></div>
+            <img id="bgImage" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous" alt="bg"/>
+            <div id="filterLayer" class="filter-layer hidden"></div>
+            <!-- 装饰下层：位于文字下方（仅背景条/遮罩条可切换到此层） -->
+            <div id="decorLayerBelow" class="drag-hit-layer"></div>
+            <!-- SVG文字层，解决描边导出不一致 -->
+            <svg id="textSvgCanvas" class="cover-svg-canvas"></svg>
+            <!-- 文字拖拽命中层（透明，仅编辑用，导出排除） -->
+            <div id="textHitLayer" class="drag-hit-layer" data-html2canvas-ignore></div>
+            <!-- 拖拽交互层：贴纸、装饰 -->
+            <div id="dragContainer" class="drag-hit-layer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+    <!-- 画布与快捷工具栏之间的分割线 -->
+    <div class="editor-divider" aria-hidden="true"></div>
 
-        // ===== 回到顶部 =====
-        backToTop.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+    <!-- 快捷工具栏（画布下方）：文字位置 / 图片 / 贴纸，高度弹性可扩展 -->
+    <div id="quickTools" class="quick-tools px-4 pt-3 pb-5 shrink-0 max-h-[40vh] lg:max-h-[290px] overflow-y-auto scroll-panel">
+      <!-- 文字位置 -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="toolbar-seg-label"><i class="fa fa-th-large"></i>文字位置</span>
+        <div class="flex gap-1">
+          <button data-align="tl" class="pos-btn">左上</button>
+          <button data-align="tc" class="pos-btn">中上</button>
+          <button data-align="tr" class="pos-btn">右上</button>
+          <button data-align="ml" class="pos-btn">左中</button>
+          <button data-align="mc" class="pos-btn">居中</button>
+          <button data-align="mr" class="pos-btn">右中</button>
+          <button data-align="bl" class="pos-btn">左下</button>
+          <button data-align="bc" class="pos-btn">中下</button>
+          <button data-align="br" class="pos-btn">右下</button>
+        </div>
+      </div>
+      <!-- 图片：滤镜 + 预设 + 裁剪 + 改尺寸 -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="toolbar-seg-label"><i class="fa fa-picture-o"></i>图片</span>
+        <label class="brow">亮度<input id="brightness" type="range" min="60" max="140" value="100" class="w-20"/><b><span id="brightLabel">100</span>%</b></label>
+        <label class="brow">对比度<input id="contrast" type="range" min="60" max="140" value="100" class="w-20"/><b><span id="contrastLabel">100</span>%</b></label>
+        <label class="brow">饱和度<input id="saturate" type="range" min="0" max="180" value="100" class="w-20"/><b><span id="saturateLabel">100</span>%</b></label>
+        <label class="brow">模糊<input id="blur" type="range" min="0" max="10" value="0" class="w-20"/><b><span id="blurLabel">0</span>px</b></label>
+        <select id="filterPreset" class="h-6 w-24 text-[11px] border border-gray-300 rounded px-1 bg-white">
+          <option value="none">无</option>
+          <option value="warm">暖色</option>
+          <option value="cool">冷色</option>
+          <option value="vintage">复古</option>
+          <option value="bw">黑白</option>
+          <option value="film">胶片</option>
+        </select>
+        <button id="cropBtn" type="button" class="crop-inline-btn" title="裁剪当前背景图，可输入尺寸或按比例裁剪">
+          <i class="fa fa-crop"></i>裁剪图片
+        </button>
+        <button id="resizeBtn" type="button" class="crop-inline-btn" title="把背景图整体缩放为指定尺寸（不裁剪内容）">
+          <i class="fa fa-expand"></i>改尺寸
+        </button>
+      </div>
+      <!-- 贴纸 -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="toolbar-seg-label"><i class="fa fa-smile-o"></i>贴纸</span>
+        <button id="stickerToggle" class="tbtn shrink-0">
+          贴纸库
+          <span class="text-[10px] text-gray-400 ml-1">共<span id="stickerCount">0</span>个</span>
+          <i id="stickerChevron" class="fa fa-chevron-down text-gray-400 ml-1 transition-transform"></i>
+        </button>
+        <div id="stickerList" class="hidden flex-1 min-w-0 flex flex-wrap gap-1 items-center max-h-[76px] overflow-y-auto scroll-panel"></div>
+        <label class="tbtn shrink-0 cursor-pointer" title="上传贴纸图片（PNG透明底最佳），插入画布后可拖拽/缩放">
+          <i class="fa fa-upload mr-1 text-primary"></i>上传贴纸
+          <input id="stickerUpload" type="file" accept="image/*" class="hidden"/>
+        </label>
+      </div>
+    </div>
+    </div>
+    <p class="text-xs text-gray-500 mt-2 text-center shrink-0">提示：文字 / 贴纸 / 装饰均可直接拖拽到任意位置，画布自动缩放适配窗口；编辑控件不会出现在导出图中。</p>
+  </section>
+</main>
 
-        // ===== 网站导航下拉 =====
-        const navDropdown = document.getElementById('navDropdown');
-        const navDropdownToggle = document.getElementById('navDropdownToggle');
+<!-- 底部版权声明（sticky 贴底：主区域加高后页脚始终可见，不产生上方空白） -->
+<footer class="bg-white border-t border-slate-200 shrink-0 sticky bottom-0 z-10">
+  <div class="max-w-[1400px] mx-auto px-4 py-2.5 text-center text-xs text-slate-500 leading-5">
+    <p>🖼️ <a href="index.html" class="hover:text-blue-600">视频封面生成器</a> ｜ 📒 <a href="note.html" class="hover:text-blue-600">笔记模板生成器</a> ｜ <a href="https://sofe.weget.site/" target="_blank" rel="noopener" class="hover:text-blue-600">⬇️ 软件下载</a></p>
+    <p>© 2026 @电脑小百科（抖音/B站）技术支持QQ：2591735711 软件精选 · All Rights Reserved</p>
+  </div>
+</footer>
 
-        // 点击切换（适配触屏 / 移动端）
-        navDropdownToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const isOpen = navDropdown.classList.toggle('open');
-            navDropdownToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        });
 
-        // 点击菜单外部时收起
-        document.addEventListener('click', function(e) {
-            if (navDropdown.classList.contains('open') && !navDropdown.contains(e.target)) {
-                navDropdown.classList.remove('open');
-                navDropdownToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
+    <!-- 图片裁剪弹窗：支持按比例或输入尺寸裁剪当前背景图 -->
+<div id="cropModal" class="crop-modal" aria-hidden="true">
+  <div class="crop-backdrop" data-crop-close></div>
+  <div class="crop-panel" role="dialog" aria-modal="true" aria-label="裁剪图片">
+    <div class="crop-head">
+      <div class="crop-head-text">
+        <h3 class="crop-title"><i class="fa fa-crop text-primary mr-1.5"></i>裁剪图片</h3>
+        <p class="crop-sub">拖动裁剪框调整位置，拉伸四角/四边调整大小；支持单独裁剪背景图，或把画布上的文字、贴纸、装饰一起裁剪输出</p>
+      </div>
+      <button type="button" class="crop-close" data-crop-close aria-label="关闭">×</button>
+    </div>
+    <div class="crop-mode-tabs">
+      <button type="button" class="crop-mode-tab active" data-crop-mode="image"><i class="fa fa-picture-o"></i>图片背景</button>
+      <button type="button" class="crop-mode-tab" data-crop-mode="canvas"><i class="fa fa-clone"></i>画布合成</button>
+    </div>
+    <div class="crop-body">
+      <div class="crop-stage-col">
+        <div id="cropStage" class="crop-stage">
+          <img id="cropPreviewImg" alt="待裁剪图片" draggable="false"/>
+          <div id="cropBox" class="crop-box" data-html2canvas-ignore>
+            <span class="crop-handle nw" data-h="nw"></span>
+            <span class="crop-handle n" data-h="n"></span>
+            <span class="crop-handle ne" data-h="ne"></span>
+            <span class="crop-handle e" data-h="e"></span>
+            <span class="crop-handle se" data-h="se"></span>
+            <span class="crop-handle s" data-h="s"></span>
+            <span class="crop-handle sw" data-h="sw"></span>
+            <span class="crop-handle w" data-h="w"></span>
+          </div>
+        </div>
+      </div>
+      <div class="crop-side">
+        <div class="crop-section">
+          <span class="crop-section-title">选择比例</span>
+          <div id="cropRatioList" class="crop-ratio-grid"></div>
+        </div>
+        <div class="crop-section">
+          <span class="crop-section-title">自定义尺寸（像素）</span>
+          <div class="crop-size-inputs">
+            <input id="cropWInput" type="number" min="1" max="4096" placeholder="宽" inputmode="numeric"/>
+            <span class="crop-size-x">×</span>
+            <input id="cropHInput" type="number" min="1" max="4096" placeholder="高" inputmode="numeric"/>
+          </div>
+          <p class="crop-hint">同时填写宽和高会自动锁定该比例；只填一项则按当前比例补全</p>
+        </div>
+        <div class="crop-section">
+          <span class="crop-section-title">输出信息</span>
+          <div id="cropInfo" class="crop-info">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="crop-foot">
+      <button type="button" class="crop-btn ghost" data-crop-close>取消</button>
+      <button type="button" id="cropExportBtn" class="crop-btn ghost"><i class="fa fa-download mr-1"></i>导出裁剪结果</button>
+      <button type="button" id="cropApplyBtn" class="crop-btn primary"><i class="fa fa-check mr-1"></i>应用裁剪</button>
+    </div>
+  </div>
+</div>
 
-        // ===== FAQ 折叠展开 =====
-        const faqItems = document.querySelectorAll('.faq-item');
-        faqItems.forEach(function(item) {
-            const question = item.querySelector('.faq-question');
-            question.addEventListener('click', function() {
-                const isActive = item.classList.contains('active');
-                faqItems.forEach(function(i) { i.classList.remove('active'); });
-                if (!isActive) {
-                    item.classList.add('active');
-                }
-            });
-        });
+<!-- 改尺寸弹窗：整体缩放背景图到指定尺寸（不裁剪内容） -->
+<div id="resizeModal" class="crop-modal" aria-hidden="true">
+  <div class="crop-backdrop" data-resize-close></div>
+  <div class="crop-panel resize-panel" role="dialog" aria-modal="true" aria-label="调整图片尺寸">
+    <div class="crop-head">
+      <div class="crop-head-text">
+        <h3 class="crop-title"><i class="fa fa-expand text-primary mr-1.5"></i>调整图片尺寸</h3>
+        <p class="crop-sub">输入目标尺寸，背景图将整体缩放（不裁剪内容）；锁定比例后只填一项即可自动补全</p>
+      </div>
+      <button type="button" class="crop-close" data-resize-close aria-label="关闭">×</button>
+    </div>
+    <div class="crop-body resize-body">
+      <div class="crop-section">
+        <span class="crop-section-title">目标尺寸（像素）</span>
+        <div class="crop-size-inputs">
+          <input id="resizeWInput" type="number" min="1" max="4096" placeholder="宽" inputmode="numeric"/>
+          <span class="crop-size-x">×</span>
+          <input id="resizeHInput" type="number" min="1" max="4096" placeholder="高" inputmode="numeric"/>
+        </div>
+        <label class="resize-keep" title="勾选后修改宽或高会自动按原比例补全另一项">
+          <input id="resizeKeepRatio" type="checkbox" checked/> 锁定宽高比（等比缩放）
+        </label>
+      </div>
+      <div class="crop-section">
+        <span class="crop-section-title">当前 → 输出</span>
+        <div id="resizeInfo" class="crop-info">—</div>
+      </div>
+      <p class="crop-hint">不锁定比例时，宽高比变化会导致图片被拉伸变形</p>
+    </div>
+    <div class="crop-foot">
+      <button type="button" class="crop-btn ghost" data-resize-close>取消</button>
+      <button type="button" id="resizeApplyBtn" class="crop-btn primary"><i class="fa fa-check mr-1"></i>应用尺寸</button>
+    </div>
+  </div>
+</div>
 
-        // ===== 平滑滚动（锚点导航）=====
-        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-            anchor.addEventListener('click', function(e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    e.preventDefault();
-                    const navHeight = navbar.offsetHeight;
-                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight - 20;
-                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                }
-            });
-        });
-
-        // ===== 移动端菜单（基础实现）=====
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        let mobileMenuOpen = false;
-
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenuOpen = !mobileMenuOpen;
-            const navLinks = document.querySelector('.nav-links');
-            if (mobileMenuOpen) {
-                navLinks.style.display = 'flex';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '68px';
-                navLinks.style.left = '0';
-                navLinks.style.right = '0';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.background = '#fff';
-                navLinks.style.padding = '20px';
-                navLinks.style.gap = '16px';
-                navLinks.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-            } else {
-                navLinks.style.display = '';
-                navLinks.style.position = '';
-                navLinks.style.top = '';
-                navLinks.style.left = '';
-                navLinks.style.right = '';
-                navLinks.style.flexDirection = '';
-                navLinks.style.background = '';
-                navLinks.style.padding = '';
-                navLinks.style.gap = '';
-                navLinks.style.boxShadow = '';
-            }
-        });
-
-        // 点击导航链接后关闭移动端菜单
-        document.querySelectorAll('.nav-link').forEach(function(link) {
-            link.addEventListener('click', function() {
-                if (mobileMenuOpen) {
-                    mobileMenuBtn.click();
-                }
-            });
-        });
-    </script>
+<script src="index.js" defer></script>
 </body>
 </html>
